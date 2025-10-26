@@ -1,2 +1,2 @@
-# python-tools-demo
-python-tools-demo
+# Python Tools Demo 🐍
+Small utilities and scripts for automation.
