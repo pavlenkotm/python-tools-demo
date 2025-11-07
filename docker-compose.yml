@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Local Ethereum node
+  ganache:
+    image: trufflesuite/ganache:latest
+    ports:
+      - "8545:8545"
+    command: >
+      --deterministic
+      --networkId 1337
+      --mnemonic "test test test test test test test test test test test junk"
+
+  # IPFS node
+  ipfs:
+    image: ipfs/kubo:latest
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - ipfs_data:/data/ipfs
+
+  # Frontend development server
+  frontend:
+    build:
+      context: ./typescript/dapp-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./typescript/dapp-frontend:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_RPC_URL=http://ganache:8545
+
+volumes:
+  ipfs_data:
