@@ -1,0 +1,81 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          cd python/web3-tools
+          pip install -r requirements.txt
+      - name: Run linting
+        run: |
+          pip install flake8
+          flake8 python/ --count --select=E9,F63,F7,F82 --show-source --statistics
+
+  typescript-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: |
+          cd typescript/dapp-frontend
+          npm install
+      - name: Build
+        run: |
+          cd typescript/dapp-frontend
+          npm run build
+
+  rust-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Build
+        run: |
+          cd rust/solana-program
+          cargo build --verbose
+      - name: Run tests
+        run: |
+          cd rust/solana-program
+          cargo test --verbose
+
+  go-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+      - name: Build
+        run: |
+          cd go/blockchain-utils
+          go build -v ./...
+
+  cpp-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install CMake
+        run: sudo apt-get install -y cmake
+      - name: Build
+        run: |
+          cd cpp/crypto-algorithms
+          mkdir -p build && cd build
+          cmake ..
+          make
