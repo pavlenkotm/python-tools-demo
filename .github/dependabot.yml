@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # NPM dependencies
+  - package-ecosystem: "npm"
+    directory: "/typescript/dapp-frontend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/python/web3-tools"
+    schedule:
+      interval: "weekly"
+
+  # Cargo dependencies
+  - package-ecosystem: "cargo"
+    directory: "/rust/solana-program"
+    schedule:
+      interval: "weekly"
+
+  # Go modules
+  - package-ecosystem: "gomod"
+    directory: "/go/blockchain-utils"
+    schedule:
+      interval: "weekly"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
